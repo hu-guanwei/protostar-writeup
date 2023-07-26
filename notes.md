@@ -1,4 +1,4 @@
-manipulate invisible characters using Python2
+## manipulate invisible characters using Python2
 
 ### set shell variable
 ```
@@ -41,3 +41,66 @@ user@protostar:~$ python -c "print '\n\r'" | python sc.py
 
 
 ```
+
+
+## modify return address to hijack flow control
+
+### 32-bit
+
+#### 1
+breakpoint before `ret`, next instruction (`eip`) is `ret`
+```
+[       ]
+[       ]
+[ret adr] <- esp
+```
+smash the stack, now the stack layout is,
+
+```
+[&bin/sh]
+[&adr   ]
+[&system] <- esp
+```
+where `&adr` is another return address you choose.
+
+#### 2
+after `ret`, next instruction is `system` with argument `"/bin/sh"`, and after it, `&adr` is to be executed. 
+
+```
+[&bin/sh]
+[&adr   ]
+```
+
+#### 3
+after `system("/bin/sh")`, `&adr` is already popped into `eip`, ...
+
+
+### 64-bit
+
+want `rip=&system` and `rdi=&"/bin/sh"`,
+
+#### 1
+breakpoint before `ret`, `rip=ret`
+
+```
+[             ]
+[             ]
+[   ret adr   ] <- rsp
+```
+smash the stack, make it into
+
+```
+[&system      ]
+[&"/bin/sh"   ]
+[&pop rdi, ret] <-rsp
+```
+
+#### 2
+after `ret`, now `rip=pop rdi, ret`
+
+```
+[&system     ]
+[&"/bin/sh"  ] <- rsp
+```
+#### 3
+after `pop rdi, ret`, now `rdi=&"bin/sh"` and `rip=system`
