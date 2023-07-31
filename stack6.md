@@ -30,3 +30,5 @@ int main(int argc, char **argv)
 ```
 
 This can be done almost the same as stack5 using ret2libc, except for the offset (=80).
+
+Ask ChatGPT, what is `__builtin_return_address`.
