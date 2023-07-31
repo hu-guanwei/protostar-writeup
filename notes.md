@@ -43,7 +43,13 @@ user@protostar:~$ python -c "print '\n\r'" | python sc.py
 ```
 
 
-## modify return address to hijack flow control
+## ret2libc, modify return address to `system`
+
+find address of `system` using gdb,
+```
+(gdb) p system
+$1 = {<text variable, no debug info>} 0xf7c47cb0 <system>
+```
 
 ### 32-bit
 
